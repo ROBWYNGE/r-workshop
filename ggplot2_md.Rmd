@@ -1,0 +1,151 @@
+---
+title: "Creating graphs in R with ggplot2""
+author: "Rob Stewart"
+date: "2022-12-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r import libraries}
+
+library(tidyverse)
+library(readxl)
+library(here)
+
+```
+
+```{r load data}
+
+ca_np <- read.csv(here("data", "ca_np.csv"))
+
+```
+
+```{r load more data}
+
+ci_np <- read_excel(here("data","ci_np.xlsx"))
+
+```
+
+```{r plots}
+
+ggplot(data = ci_np, aes(x= year, y = visitors)) +
+  geom_line()
+
+```
+```{r plot with base}
+
+gg_base <- ggplot(data=ci_np, aes(x=year,y=visitors))
+
+gg_base +
+  geom_point()
+
+```
+```{r}
+
+gg_base +
+  geom_col()
+
+```
+
+```{r}
+
+gg_base +
+  geom_line(
+    color = "purple",
+    linetype = "dashed",
+    
+  )
+
+```
+
+```{r}
+gg_base +
+  geom_point(
+    pch = 17,
+    color = "red",
+    alpha = 0.5
+  )
+
+```
+
+```{r}
+
+gg_base +
+  geom_col(
+    aes(fill=visitors)
+  )
+
+```
+
+```{r}
+gg_base +
+  geom_point(
+    aes(color = visitors,
+        size = visitors)
+  ) +
+  theme_classic()
+
+```
+
+
+```{r}
+
+#theme_set(theme_light())
+#theme_update(plot.title = element_text(hjust = 0.5))
+  
+#library(scales)    
+
+gg_base +
+  geom_line(linetype="dotted",
+            linewidth = 1,
+            color = "blue") +
+  labs(
+    x = "Year",
+    y = "Annual Visitors",
+    title = "Annual Visitors to Channel Islands NP",
+    subtitle = "1960-2016" ) +
+   
+  scale_y_continuous(label= comma)
+  
+
+```
+
+```{r}
+
+gg_np <- ggplot(data = ca_np, aes(x = year, y = visitors, group = park_name))
+
+gg_np +
+  geom_line(color="blue") +
+  labs(title = "Visitors at All National Parks") +
+  scale_y_continuous(label = comma) +
+  theme_light()
+
+```
+
+```{r}
+
+gg_np2 <- ggplot(data = ca_np, aes(x = year, y = visitors))
+
+gg_np2 +
+  geom_line(aes(color = park_name )) +
+  labs(title = "Visitors at All National Parks") +
+  scale_y_continuous(label = comma) +
+  theme_light()
+
+```
+
+```{r}
+
+gg_np +
+  geom_line(show.legend = FALSE) +
+  theme_light() +
+  labs(x = "year", y = "visitors", title = "National Park Visitors 1950-2016") +
+  facet_wrap(~ park_name) +
+  scale_y_continuous(label = comma) +
+  xlim(1950, 2016)
+
+```
+
