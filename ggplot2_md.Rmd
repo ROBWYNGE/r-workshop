@@ -139,7 +139,7 @@ gg_np2 +
 
 ```{r}
 
-gg_np +
+Subgraphs <- gg_np +
   geom_line(show.legend = FALSE) +
   theme_light() +
   labs(x = "year", y = "visitors", title = "National Park Visitors 1950-2016") +
@@ -147,5 +147,18 @@ gg_np +
   scale_y_continuous(label = comma) +
   xlim(1950, 2016)
 
+
+```
+
+
+```{r}
+
+Subgraphs
+```
+
+```{r}
+
+ggsave("NatParks.jpg", plot = Subgraphs, width = 6, height = 7)
+ 
 ```
 

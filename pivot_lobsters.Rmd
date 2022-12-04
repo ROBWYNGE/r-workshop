@@ -1,0 +1,122 @@
+---
+title: "pivot_lobsters.Rmd"
+author: "Rob Stewart"
+date: "2022-12-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(here)
+library(skimr) # install.packages('skimr')
+library(kableExtra) # install.packages('kableExtra')
+
+```
+
+```{r}
+lobsters <- read_xlsx(here("data/lobsters.xlsx"), skip=4)
+
+
+```
+
+```{r}
+lobsters %>% 
+  group_by(year) %>% 
+  summarise(count_by_year = n())
+
+
+```
+```{r}
+lobsters %>% 
+  group_by(year, site) %>% 
+  summarise(count = n(), 
+            mean = mean(size_mm, na.rm=TRUE),
+            SD = sd(size_mm, na.rm=TRUE))
+
+```
+```{r}
+
+
+site_summary <- lobsters %>% 
+  group_by(year, site) %>% 
+  summarise(count = n(), 
+            mean = mean(size_mm, na.rm=TRUE),
+            SD = sd(size_mm, na.rm=TRUE))
+
+site_summary
+
+```
+
+```{r}
+
+site_summary %>% 
+  kable()
+
+```
+
+“There are `r nrow(lobsters)` total lobsters included in this report.”
+
+```{r}
+
+site_median <- lobsters %>% 
+  group_by(year, site) %>%
+  summarise(median_size = median(size_mm))
+
+```
+```{r}
+
+ggplot(site_summary) +
+  aes(x=year, y=count) +
+  geom_col(fill="royalblue") +
+  labs(title = "Count by Year",
+       y = "Lobster Count",
+       x = "Year") +
+  theme(plot.title = element_text(color="Black", 
+                                  size=18,
+                                  hjust=0.5),
+        panel.border = element_rect(color="black", fill=NA),
+        panel.background = element_rect(fill="transparent"))
+        #panel.background = element_rect(fill = "white"))
+       # panel.grid.major = element_line(color="black"
+  #theme_light() 
+
+  #ggsave("lobsters_count_by_year.jpg")
+
+```
+
+```{r}
+
+ggplot(site_median) +
+  aes(x=year, y=median_size) +
+  geom_point(aes(color=median_size)) +
+  labs(title = "Median Lobster Size")
+  ggsave("lobsters_size_by_site.jpg")
+
+```
+
+```{r}
+
+lobsters2 <- lobsters %>% 
+  mutate(size_meters = size_mm / 1000,
+         observer = "Rob Stewart")
+
+lobsters2
+
+```
+
+```{r}
+lobsters2$size_meters2 <- lobsters2$size_mm / 1000
+```
+
+```{r}
+lobsters_small <- lobsters %>% 
+  select(date, site, size_mm)
+
+lobsters_small
+```
+
